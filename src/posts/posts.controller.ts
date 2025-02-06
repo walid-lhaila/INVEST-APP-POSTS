@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import {Controller} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
@@ -25,5 +25,16 @@ export class PostsController {
   @MessagePattern({ cmd: 'getAll' })
   async getAllPosts() {
     return this.postService.getAllPosts();
+  }
+
+  @MessagePattern({ cmd: 'getAllPostsByUserId' })
+  async getAllPostsByUserId(@Payload() data: any) {
+    const { token } = data;
+    if(!token){
+      throw new Error('Token is Missing');
+    }
+    const userId = await this.postService.verifyToken(token);
+    console.log(userId);
+    return this.postService.getPostByUserId(userId);
   }
 }
