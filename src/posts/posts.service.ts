@@ -34,4 +34,9 @@ export class PostsService {
     });
     return createdPost.save();
   }
+
+  async getAllPosts(): Promise<PostsDocument[]> {
+    const allPosts = this.postsModel.find().exec();
+    return allPosts;
+  }
 }
