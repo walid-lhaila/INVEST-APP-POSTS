@@ -13,7 +13,7 @@ export class PostsService {
   async verifyToken(token: string): Promise<string> {
     const jwtToken = token.split(' ')[1];
     const decodedToken = jwt.decode(jwtToken) as jwt.JwtPayload;
-    const id = decodedToken?.sid;
+    const id = decodedToken?.sub;
     if (!id) {
       throw new Error('Invalid token: ID not found.');
     }
@@ -38,5 +38,10 @@ export class PostsService {
   async getAllPosts(): Promise<PostsDocument[]> {
     const allPosts = this.postsModel.find().exec();
     return allPosts;
+  }
+
+  async getPostByUserId(userId: string): Promise<PostsDocument[]> {
+    const getPostByUser = this.postsModel.find({ entrepreneurId: userId }).exec();
+    return getPostByUser;
   }
 }
