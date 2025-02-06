@@ -31,7 +31,6 @@ export class MinioService {
           { 'Content-Type': file.mimetype }
       );
       const imageUrl = `http://${this.configService.get<string>('MINIO_ENDPOINT')}:${this.configService.get<string>('MINIO_PORT')}/${this.bucketName}/${fileName}`;
-      console.log('Generated MinIO URL:', imageUrl); // Add this log
       return imageUrl;
     } catch (error) {
       console.error('MinIO upload error:', error);

@@ -20,4 +20,10 @@ export class PostsController {
     };
     return this.postService.createPosts(postData, file);
   }
+
+
+  @MessagePattern({ cmd: 'getAll' })
+  async getAllPosts() {
+    return this.postService.getAllPosts();
+  }
 }
