@@ -44,4 +44,14 @@ export class PostsService {
     const getPostByUser = this.postsModel.find({ entrepreneurId: userId }).exec();
     return getPostByUser;
   }
+
+  async deletePost(userId: string, postId: string): Promise<{ message: string }> {
+    const deletedPost = await this.postsModel.findOneAndDelete({ _id: postId,  entrepreneurId: userId });
+    if (!deletedPost) {
+      throw new Error('Post not found or not authorized to delete');
+    }
+    return { message: 'Post deleted successfully' };
+  }
+
+
 }
