@@ -52,4 +52,21 @@ export class PostsController {
     const userId = await this.postService.verifyToken(token);
     return this.postService.deletePost(userId, postId);
   }
+
+
+  @MessagePattern({ cmd: 'updatePost' })
+  async updatePost(@Payload() data: any) {
+    const { token, postId, payload, file } = data;
+    if (!token) {
+      throw new UnauthorizedException('TOKEN IS MISSING');
+    }
+    if (!postId) {
+      throw new Error('POST ID IS REQUIRED');
+    }
+
+    const userId = await this.postService.verifyToken(token);
+    return this.postService.updatePost(userId, postId, payload, file);
+  }
+
+
 }

@@ -53,5 +53,34 @@ export class PostsService {
     return { message: 'Post deleted successfully' };
   }
 
+  async updatePost( userId: string, postId: string, updatedData: Partial<PostsDto>, file?: { buffer: string; originalname: string; mimetype: string }): Promise<PostsDocument> {
+    const post = await this.postsModel.findOne({ _id: postId, entrepreneurId: userId });
+    if (!post) {
+      throw new Error('Post Not Found Or Not Authorized To Update');
+    }
+
+    let imageUrl = post.imageUrl;
+    if (file && file.buffer) {
+      const fileBuffer = Buffer.from(file.buffer, 'base64');
+      imageUrl = await this.minioService.uploadImage({
+        ...file,
+        buffer: fileBuffer,
+      });
+    }
+
+    const updatedPost = await this.postsModel.findOneAndUpdate(
+        { _id: postId, entrepreneurId: userId },
+        { ...updatedData, imageUrl },
+        { new: true },
+    );
+
+    if (!updatedPost) {
+      throw new Error('Failed to update the post');
+    }
+
+    return updatedPost;
+  }
+
+
 
 }
