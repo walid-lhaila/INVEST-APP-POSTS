@@ -1,4 +1,4 @@
-import {Controller} from '@nestjs/common';
+import {Controller, UnauthorizedException} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
@@ -36,5 +36,20 @@ export class PostsController {
     const userId = await this.postService.verifyToken(token);
     console.log(userId);
     return this.postService.getPostByUserId(userId);
+  }
+
+
+  @MessagePattern({ cmd: 'deletePost' })
+  async deletePost(@Payload() data: any) {
+    const {token, postId } = data;
+    if(!token) {
+      throw new UnauthorizedException('Token is Missing');
+    }
+    if(!postId) {
+      throw new Error('Post Id is Required');
+    }
+
+    const userId = await this.postService.verifyToken(token);
+    return this.postService.deletePost(userId, postId);
   }
 }
