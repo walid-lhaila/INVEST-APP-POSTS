@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema()
 export class Posts extends Document {
   @Prop({ required: true })
-  entrepreneurId: string;
+  entrepreneur: string;
 
   @Prop({ required: true })
   title: string;

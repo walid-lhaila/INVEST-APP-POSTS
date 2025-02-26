@@ -13,11 +13,11 @@ export class PostsService {
   async verifyToken(token: string): Promise<string> {
     const jwtToken = token.split(' ')[1];
     const decodedToken = jwt.decode(jwtToken) as jwt.JwtPayload;
-    const id = decodedToken?.sub;
-    if (!id) {
+    const user = decodedToken?.preferred_username;
+    if (!user) {
       throw new Error('Invalid token: ID not found.');
     }
-    return id;
+    return user;
   }
   async createPosts(postsDto: PostsDto, file?: { buffer: string; originalname: string; mimetype: string },): Promise<PostsDocument> {
     let imageUrl;
@@ -41,20 +41,24 @@ export class PostsService {
   }
 
   async getPostByUserId(userId: string): Promise<PostsDocument[]> {
-    const getPostByUser = this.postsModel.find({ entrepreneurId: userId }).exec();
-    return getPostByUser;
+    return this.postsModel.find({ entrepreneur: userId }).exec();
   }
 
   async deletePost(userId: string, postId: string): Promise<{ message: string }> {
-    const deletedPost = await this.postsModel.findOneAndDelete({ _id: postId,  entrepreneurId: userId });
+    const deletedPost = await this.postsModel.findOneAndDelete({ _id: postId, entrepreneur: userId });
     if (!deletedPost) {
       throw new Error('Post not found or not authorized to delete');
     }
     return { message: 'Post deleted successfully' };
   }
 
-  async updatePost( userId: string, postId: string, updatedData: Partial<PostsDto>, file?: { buffer: string; originalname: string; mimetype: string }): Promise<PostsDocument> {
-    const post = await this.postsModel.findOne({ _id: postId, entrepreneurId: userId });
+  async updatePost(
+      userId: string,
+      postId: string,
+      updatedData: Partial<PostsDto>,
+      file?: { buffer: string; originalname: string; mimetype: string }
+  ): Promise<PostsDocument> {
+    const post = await this.postsModel.findOne({ _id: postId, entrepreneur: userId });
     if (!post) {
       throw new Error('Post Not Found Or Not Authorized To Update');
     }
@@ -69,9 +73,9 @@ export class PostsService {
     }
 
     const updatedPost = await this.postsModel.findOneAndUpdate(
-        { _id: postId, entrepreneurId: userId },
+        { _id: postId, entrepreneur: userId },
         { ...updatedData, imageUrl },
-        { new: true },
+        { new: true }
     );
 
     if (!updatedPost) {
@@ -80,7 +84,6 @@ export class PostsService {
 
     return updatedPost;
   }
-
 
 
 }

@@ -11,7 +11,7 @@ import {
 export class PostsDto {
   @IsString()
   @IsNotEmpty()
-  entrepreneurId: string;
+  entrepreneur: string;
 
   @IsString()
   @IsNotEmpty()

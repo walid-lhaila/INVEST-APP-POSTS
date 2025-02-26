@@ -12,11 +12,11 @@ export class PostsController {
     if (!token) {
       throw new Error('token is missing');
     }
-    const entrepreneurId = await this.postService.verifyToken(token);
+    const entrepreneur = await this.postService.verifyToken(token);
 
     const postData = {
       ...payload,
-      entrepreneurId,
+      entrepreneur,
     };
     return this.postService.createPosts(postData, file);
   }
@@ -30,29 +30,26 @@ export class PostsController {
   @MessagePattern({ cmd: 'getAllPostsByUserId' })
   async getAllPostsByUserId(@Payload() data: any) {
     const { token } = data;
-    if(!token){
+    if (!token) {
       throw new Error('Token is Missing');
     }
     const userId = await this.postService.verifyToken(token);
-    console.log(userId);
     return this.postService.getPostByUserId(userId);
   }
 
-
   @MessagePattern({ cmd: 'deletePost' })
   async deletePost(@Payload() data: any) {
-    const {token, postId } = data;
-    if(!token) {
+    const { token, postId } = data;
+    if (!token) {
       throw new UnauthorizedException('Token is Missing');
     }
-    if(!postId) {
+    if (!postId) {
       throw new Error('Post Id is Required');
     }
 
     const userId = await this.postService.verifyToken(token);
     return this.postService.deletePost(userId, postId);
   }
-
 
   @MessagePattern({ cmd: 'updatePost' })
   async updatePost(@Payload() data: any) {
@@ -67,6 +64,5 @@ export class PostsController {
     const userId = await this.postService.verifyToken(token);
     return this.postService.updatePost(userId, postId, payload, file);
   }
-
 
 }
