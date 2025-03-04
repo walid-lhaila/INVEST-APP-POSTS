@@ -37,4 +37,13 @@ export class FavoritesService {
   async getFvoritesByUser(username: string) {
     return this.favoriteModel.find({ username }).populate('post').exec();
   }
+
+  async removeFavorite(favoriteId: string) {
+    const deletedFavorite =
+      await this.favoriteModel.findByIdAndDelete(favoriteId);
+    if (!deletedFavorite) {
+      throw new Error('Favorite not found or not authorized to delete');
+    }
+    return { message: 'Favorite removed successfully' };
+  }
 }

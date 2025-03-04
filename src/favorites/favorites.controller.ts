@@ -26,4 +26,13 @@ export class FavoritesController {
     const username = await this.favoriteService.verifyToken(token);
     return this.favoriteService.getFvoritesByUser(username);
   }
+
+  @MessagePattern({ cmd: 'removeFavorite' })
+  async removeFavorite(@Payload() data: any) {
+    const { favoriteId, token } = data;
+    if (!token) {
+      throw new UnauthorizedException('Token is Missing');
+    }
+    return this.favoriteService.removeFavorite(favoriteId);
+  }
 }
