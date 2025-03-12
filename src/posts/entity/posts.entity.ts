@@ -12,19 +12,8 @@ export class Posts extends Document {
   @Prop({ required: true })
   description: string;
 
-  @Prop({
-    required: true,
-    enum: [
-      'Technologie',
-      'Santé',
-      'Éducation',
-      'Finance',
-      'Environnement',
-      'Industrie',
-      'Autre',
-    ],
-  })
-  category: string;
+  @Prop({ required: true })
+  category: string[];
 
   @Prop({ type: [String], default: [] })
   tags: string[];
