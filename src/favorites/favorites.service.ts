@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Favorite } from './entity/favorites.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { FavoritesDto } from './dto/favorites.dto';
 import * as jwt from 'jsonwebtoken';
 
@@ -23,14 +23,20 @@ export class FavoritesService {
 
   async addFavorites(dto: FavoritesDto) {
     const { username, post } = dto;
-    const existingFavorite = await this.favoriteModel.findOne({
-      username,
-      post,
-    });
+    if (!post || !mongoose.Types.ObjectId.isValid(post)) {
+      throw new Error('Invalid post ID');
+    }
+
+    const postId = new mongoose.Types.ObjectId(post);
+
+    const existingFavorite = await this.favoriteModel.findOne({ username: username, post: postId,});
     if (existingFavorite) {
       throw new Error('This Post Already Favorite');
     }
-    const favorite = new this.favoriteModel({ username, post });
+    const favorite = new this.favoriteModel({
+      username,
+      post: postId,
+    });
     return await favorite.save();
   }
 
@@ -44,6 +50,6 @@ export class FavoritesService {
     if (!deletedFavorite) {
       throw new Error('Favorite not found or not authorized to delete');
     }
-    return { message: 'Favorite removed successfully' };
+    return deletedFavorite;
   }
 }

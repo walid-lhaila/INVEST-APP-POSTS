@@ -21,15 +21,8 @@ export class PostsDto {
   @IsNotEmpty()
   description: string;
 
-  @IsEnum([
-    'Technologie',
-    'Santé',
-    'Éducation',
-    'Finance',
-    'Environnement',
-    'Industrie',
-    'Autre',
-  ])
+  @IsString()
+  @IsArray()
   category: string;
 
   @IsArray()

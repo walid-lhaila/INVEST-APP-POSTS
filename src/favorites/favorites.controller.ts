@@ -33,6 +33,7 @@ export class FavoritesController {
     if (!token) {
       throw new UnauthorizedException('Token is Missing');
     }
+    await this.favoriteService.verifyToken(token);
     return this.favoriteService.removeFavorite(favoriteId);
   }
 }
