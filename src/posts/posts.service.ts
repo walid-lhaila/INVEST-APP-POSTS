@@ -28,16 +28,12 @@ export class PostsService {
         buffer: fileBuffer,
       });
     }
-    const createdPost = new this.postsModel({
-      ...postsDto,
-      imageUrl,
-    });
-    return createdPost.save();
+    return this.postsModel.create({ ...postsDto, imageUrl });
+
   }
 
   async getAllPosts(): Promise<PostsDocument[]> {
-    const allPosts = this.postsModel.find().exec();
-    return allPosts;
+    return this.postsModel.find().exec();
   }
 
   async getPostByUserId(userId: string): Promise<PostsDocument[]> {
