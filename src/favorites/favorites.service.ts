@@ -33,11 +33,10 @@ export class FavoritesService {
     if (existingFavorite) {
       throw new Error('This Post Already Favorite');
     }
-    const favorite = new this.favoriteModel({
+    return this.favoriteModel.create({
       username,
       post: postId,
     });
-    return await favorite.save();
   }
 
   async getFvoritesByUser(username: string) {
