@@ -10,14 +10,14 @@ export class MinioService {
 
   constructor(private readonly configService: ConfigService) {
     this.minioClient = new Client({
-      endPoint: this.configService.get<string>('MINIO_ENDPOINT') || 'localhost',
-      port: parseInt(this.configService.get<string>('MINIO_PORT') || '9000', 10),
+      endPoint: this.configService.get<string>('MINIO_ENDPOINT') ?? 'minio',
+      port: parseInt(this.configService.get<string>('MINIO_PORT') ?? '9000', 10),
       useSSL: false,
-      accessKey: this.configService.get<string>('MINIO_ACCESS_KEY') || '',
-      secretKey: this.configService.get<string>('MINIO_SECRET_KEY') || '',
+      accessKey: this.configService.get<string>('MINIO_ACCESS_KEY') ?? 'minioadmin',
+      secretKey: this.configService.get<string>('MINIO_SECRET_KEY') ?? 'minioadmin',
     });
 
-    this.bucketName = this.configService.get<string>('MINIO_BUCKET_NAME') || 'default-bucket';
+    this.bucketName = this.configService.get<string>('MINIO_BUCKET_NAME') ?? 'invest-images';
   }
 
   async uploadImage(file: { buffer: Buffer; originalname: string; mimetype: string }): Promise<string> {
